@@ -1218,6 +1218,39 @@ JMeter automatically generates a variable `__jm__<loopName>__idx` with the curre
 
 Check [ForLoopController](../../jmeter-java-dsl/src/main/java/us/abstracta/jmeter/javadsl/core/controllers/ForLoopController.java) for more details.
 
+#### Once Only Controller
+
+In some cases, you only need to run part of a test plan once. For these needs you can use `DslOnceOnlyController`. This controller will execute a part of test plan only one time on first iteration (Uses [JMeter Once Only Controller Component](https://jmeter.apache.org/usermanual/component_reference.html#Once_Only_Controller) ) 
+
+```java
+import org.junit.jupiter.api.Test;
+import us.abstracta.jmeter.javadsl.JmeterDslTest;
+import us.abstracta.jmeter.javadsl.core.TestPlanStats;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static us.abstracta.jmeter.javadsl.JmeterDsl.*;
+
+public class DslOnceOnlyControllerTest extends JmeterDslTest {
+
+
+  @Test
+  public void shouldExecuteOnlyOneTimeWhenOnceOnlyControllerInPlan() throws Exception {
+    TestPlanStats stats = testPlan(
+        threadGroup(1, 10,
+            onceOnlyController(
+                httpSampler("http://my.service/accounts")
+            )
+        )
+    ).run();
+    assertThat(stats.overall().samplesCount()).isEqualTo(1);
+  }
+
+}
+```
+This will result only 1 request. 
+
+Check [DslOnceOnlyController](../../jmeter-java-dsl/src/main/java/us/abstracta/jmeter/javadsl/core/controllers/DslOnceOnlyController.java) for more details.
+
 ### Provide Request Parameters Programmatically per Request
 
 With the standard DSL you can provide static values to request parameters, such as a body. However, you may also want to be able to modify your requests for each call. This is common in cases where your request creates something that must have unique values.

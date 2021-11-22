@@ -14,6 +14,7 @@ import us.abstracta.jmeter.javadsl.core.controllers.DslIfController;
 import us.abstracta.jmeter.javadsl.core.controllers.DslTransactionController;
 import us.abstracta.jmeter.javadsl.core.controllers.DslWhileController;
 import us.abstracta.jmeter.javadsl.core.controllers.ForLoopController;
+import us.abstracta.jmeter.javadsl.core.controllers.DslOnceOnlyController;
 import us.abstracta.jmeter.javadsl.core.controllers.PercentController;
 import us.abstracta.jmeter.javadsl.core.listeners.DslViewResultsTree;
 import us.abstracta.jmeter.javadsl.core.listeners.HtmlReporter;
@@ -402,6 +403,22 @@ public class JmeterDsl {
    */
   public static ForLoopController forLoopController(int count, ThreadGroupChild... children) {
     return new ForLoopController(null, count, Arrays.asList(children));
+  }
+
+  /**
+   * Builds a Once Only Controller that Allows running a part of a test plan only once
+   * and only on the first iteration of each thread group.
+   *
+   * Eg: if a thread group iterates 3 times and contains few samplers inside the Once Only Controller, then the
+   * children elements will run 1 times for each thread.
+   *
+   * @param children contains the test plan elements to execute only one time on first iteration of each thread group.
+   * @return the controller instance for further configuration and usage.
+   * @see DslOnceOnlyController
+   * @since 0.34
+   */
+  public static DslOnceOnlyController onceOnlyController(ThreadGroupChild... children) {
+    return new DslOnceOnlyController(Arrays.asList(children));
   }
 
   /**
